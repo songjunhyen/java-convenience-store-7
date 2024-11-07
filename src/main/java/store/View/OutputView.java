@@ -17,6 +17,15 @@ public class OutputView {
                     + (product.getPromotion() != null ? product.getPromotion() : ""));
         }
     }
+
+    public static void printP(List<String[]> productList) {
+        for (String[] item : productList) {
+            String itemName = item[0];
+            int quantity = Integer.parseInt(item[1]);
+
+            System.out.println("상품명: " + itemName + "\n" + "수량: " + quantity);
+        }
+    }
 }
 
 
