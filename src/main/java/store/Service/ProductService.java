@@ -22,8 +22,16 @@ public class ProductService {
         List<String> lines = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line;
+            boolean firstLine = true;  // 첫 번째 줄(헤더) 체크용 변수
             while ((line = br.readLine()) != null) {
-                lines.add(line);  // 파일에서 읽은 줄을 리스트에 추가
+                // 첫 번째 줄(헤더)을 건너뛰고 처리
+                if (firstLine) {
+                    firstLine = false;
+                    continue;  // 헤더는 건너뜁니다
+                }
+                if (!line.trim().isEmpty()) {  // 빈 줄은 건너뛰기
+                    lines.add(line);  // 유효한 줄만 리스트에 추가
+                }
             }
         } catch (IOException e) {
             e.printStackTrace(); // 예외 처리
@@ -35,15 +43,14 @@ public class ProductService {
     private static List<Product> parseProductLines(List<String> lines) {
         List<Product> productList = new ArrayList<>();
         for (String line : lines) {
-            Product product = parseProduct(line);  // 각 줄을 파싱하여 Product 객체 생성
+            Product product = parseProduct(line);
             if (product != null) {
-                productList.add(product);  // 유효한 제품 객체만 리스트에 추가
+                productList.add(product);
             }
         }
         return productList;
     }
 
-    // 한 줄을 파싱하여 Product 객체로 변환하는 메서드
     private static Product parseProduct(String line) {
         String[] productDetails = line.split(PARSER);
         if (productDetails.length == 4) {
@@ -52,12 +59,11 @@ public class ProductService {
             int stock = Integer.parseInt(productDetails[2]);
             String promotion = productDetails[3];
 
-            return createProduct(name, price, stock, promotion);  // Product 객체 생성 후 반환
+            return createProduct(name, price, stock, promotion);
         }
-        return null;  // 유효하지 않으면 null 반환
+        return null;
     }
 
-    // Product 객체를 생성하는 메서드
     private static Product createProduct(String name, int price, int stock, String promotion) {
         return new Product(name, price, stock, promotion);  // Product 객체 생성
     }
